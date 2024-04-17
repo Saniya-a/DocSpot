@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DocSpot.Repository\DocSpot.Repository.csproj" />
+    <ProjectReference Include="..\DocSpot.ViewModels\DocSpot.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

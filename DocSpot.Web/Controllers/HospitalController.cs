@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocSpot.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DocSpot.Web.Controllers
 {
@@ -15,6 +16,11 @@ namespace DocSpot.Web.Controllers
         }
 
         public IActionResult AddEdit()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddEdit(HospitalVM model)
         {
             return View();
         }

@@ -20,8 +20,6 @@ namespace DocSpot.ViewModels
         public DateTime DOB { get; set; }
         public decimal Fees { get; set; }
         public int DepartmentId { get; set; }
-        public Department Department { get; set; }
         public int HospitalId { get; set; }
-        public Hospital Hospital { get; set; }
     }
 }
