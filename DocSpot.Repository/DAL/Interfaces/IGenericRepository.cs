@@ -12,6 +12,9 @@ namespace DocSpot.Repository.DAL.Interfaces
         IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null,
                                 Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
                                 string includeProperties = "");
+        (IEnumerable<T> items, int total) GetAll(int pageNo, int perPage, Expression<Func<T, bool>> filter = null,
+                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                string includeProperties = "");
         Task<T> GetById(int id);
         Task<T> Add(T item);
         Task<T> Update(T item);

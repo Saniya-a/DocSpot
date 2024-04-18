@@ -1,13 +1,13 @@
-﻿@model DocSpot.ViewModels.HospitalVM
+﻿@model DocSpot.ViewModels.DepartmentVM
 
 @{
     if(Model.Id == 0)
     {
-        ViewData["Title"] = "Add Hospital";
+        ViewData["Title"] = "Add Department";
     }
     else
     {
-        ViewData["Title"] = "Edit Hospital";
+        ViewData["Title"] = "Edit Department";
     }
 
 
@@ -19,23 +19,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddEdit" method="post" asp-controller="Hospital">
+        <form asp-action="AddEdit" method="post" asp-controller="Department">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.HiddenFor(x => x.Id)
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Contact" class="control-label"></label>
-                <input asp-for="Contact" class="form-control" />
-                <span asp-validation-for="Contact" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

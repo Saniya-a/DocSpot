@@ -1,9 +1,8 @@
-﻿@model IEnumerable<DocSpot.ViewModels.HospitalVM>
+﻿@model IEnumerable<DocSpot.ViewModels.DepartmentVM>
 
 @{
-    ViewData["Title"] = "Hospitals";
     Layout = "_AdminLayout";
-
+    ViewData["Title"] = "Departments";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -15,9 +14,7 @@
     <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Hospital Name</th>
-            <th scope="col">Contact No.</th>
-            <th scope="col">Address</th>
+            <th scope="col">Departments</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -38,13 +35,11 @@
                 serverSide: true,
                 "ajax": {
                     "method": 'POST',
-                    "url": "/Hospital/LoadData",
+                    "url": "/Department/LoadData",
                 },
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
-                    { "data": "name", "name": "Hospital Name", "autoWidth": true },
-                    { "data": "contact", "name": "Contact No.", "autoWidth": true },
-                    { "data": "address", "name": "Address", "autoWidth": true },
+                    { "data": "name", "name": "Departments", "autoWidth": true },
                     {
                         "render": function (data, type, row) {
                             var editButton = "<a href='AddEdit?id=" + row.id + "' class='btn btn-primary'>Edit</a>";
@@ -67,9 +62,9 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-
+                   
                     $.ajax({
-                        url: '/Hospital/Delete?id=' + id,
+                        url: '/Department/Delete?id=' + id,
                         success: function (response) {
                             // Handle success response
                             // For example, reload the data table after deletion

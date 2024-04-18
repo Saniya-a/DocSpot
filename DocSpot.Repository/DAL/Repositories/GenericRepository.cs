@@ -22,6 +22,7 @@ namespace DocSpot.Repository.DAL.Repositories
         public async Task<T> Add(T item)
         {
             await dbSet.AddAsync(item);
+            await _dbContext.SaveChangesAsync();
             return item;
         }
 
@@ -66,6 +67,26 @@ namespace DocSpot.Repository.DAL.Repositories
                 return orderBy(query).ToList();
             }
             return query.ToList();
+        }
+
+        public (IEnumerable<T> items, int total) GetAll(int pageNo, int perPage, Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
+        {
+            IQueryable<T> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            var total = query.Count();
+            foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query.Include(property);
+            }
+            query = query.Skip((pageNo) * perPage).Take(perPage);
+            if (orderBy != null)
+            {
+                return (orderBy(query).ToList(), total);
+            }
+            return (query.ToList(), total);
         }
 
         public async Task<T> GetById(int id)

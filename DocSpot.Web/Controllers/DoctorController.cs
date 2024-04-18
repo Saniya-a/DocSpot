@@ -7,45 +7,35 @@ using System.Linq.Expressions;
 
 namespace DocSpot.Web.Controllers
 {
-    public class DepartmentController : Controller
+    public class DoctorController : Controller
     {
-        private readonly IGenericRepository<Department> _repository;
-        public DepartmentController(IGenericRepository<Department> repository)
+        private readonly IGenericRepository<Doctor> _repository;
+        public DoctorController(IGenericRepository<Doctor> repository)
         {
             _repository = repository;
         }
+
         public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult GetAll()
         {
             return View();
         }
 
         public async Task<IActionResult> AddEdit(int id)
         {
-            try
+            if (id == 0)
             {
-                if (id == 0)
-                {
-                    return View(new DepartmentVM());
-                }
-                else
-                {
-                    var editObj = await _repository.GetById(id);
-                    var model = new DepartmentVM(editObj);
-                    return View(model);
-                }
+                return View(new DoctorVM());
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
+                var editObj = await _repository.GetById(id);
+                var model = new DoctorVM(editObj);
+                return View(model);
             }
+            return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddEdit(DepartmentVM model)
+        public async Task<IActionResult> AddEdit(DoctorVM model)
         {
             try
             {
@@ -74,6 +64,15 @@ namespace DocSpot.Web.Controllers
             }
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            var deleteObj = await _repository.GetById(id);
+            var model = new DoctorVM(deleteObj);
+            await _repository.Delete(deleteObj);
+            return Ok("Item deleted successfully");
+        }
+
         [HttpPost]
         public async Task<IActionResult> LoadData()
         {
@@ -83,13 +82,13 @@ namespace DocSpot.Web.Controllers
                 var start = Request.Form["start"].FirstOrDefault();
                 var length = Request.Form["length"].FirstOrDefault();
                 var searchString = Request.Form["search[value]"].FirstOrDefault();
-                Expression<Func<Department, bool>> filter = null;// Filter expression
+                Expression<Func<Doctor, bool>> filter = null;// Filter expression
                 if (!string.IsNullOrWhiteSpace(searchString))
-                    filter = x => (x.Name.Contains(searchString));
+                    filter = x => (x.FirstName.Contains(searchString) || x.LastName.Contains(searchString) || x.Address.Contains(searchString));
 
-                Func<IQueryable<Department>, IOrderedQueryable<Department>> orderBy = query =>
+                Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy = query =>
                 {
-                    return query.OrderBy(item => item.Name);
+                    return query.OrderBy(item => item.FirstName);
                 };
 
                 var data = _repository.GetAll(Convert.ToInt32(start), Convert.ToInt32(length), filter, orderBy);
