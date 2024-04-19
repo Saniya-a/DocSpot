@@ -22,8 +22,12 @@ namespace DocSpot.ViewModels
         public string Address { get; set; }
         public DateTime DOB { get; set; }
         public decimal Fees { get; set; }
+        public string? DepartmentName { get; set; }
+        public string? HospitalName { get; set; }
+
         public int DepartmentId { get; set; }
         public int HospitalId { get; set; }
+        public string? FullName { get; set; }
 
         public DoctorVM()
         {
@@ -33,6 +37,7 @@ namespace DocSpot.ViewModels
         public DoctorVM(Doctor model)
         {
             Id = model.Id;
+            FullName = model.FirstName + " " + model.LastName;  
             FirstName = model.FirstName;
             LastName = model.LastName;
             Username = model.Username;
@@ -44,6 +49,8 @@ namespace DocSpot.ViewModels
             Fees = model.Fees;
             DepartmentId = model.DepartmentId;
             HospitalId = model.HospitalId;
+            DepartmentName = model.Department.Name;
+            HospitalName = model.Hospital.Name;
         }
 
         public Doctor ConvertToModel(DoctorVM model)

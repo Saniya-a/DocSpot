@@ -1,0 +1,107 @@
+﻿@model IEnumerable<DocSpot.ViewModels.PatientVM>
+
+@{
+    ViewData["Title"] = "Patients";
+    Layout = "_AdminLayout";
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="AddEdit">Create New</a>
+</p>
+<table class="dataTable table mb-4" id="dataTable">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Fullname</th>
+            <th scope="col">Username</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Email</th>
+            <th scope="col">Contact No.</th>
+            <th scope="col">Address</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            GetAllData();
+        });
+
+        function GetAllData() {
+            $('#dataTable').DataTable({
+                pageLength: 5,
+                serverSide: true,
+                "ajax": {
+                    "method": 'POST',
+                    "url": "/Patient/LoadData",
+                },
+                "columns": [
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "fullName", "name": "Fullname", "autoWidth": true },
+                    { "data": "username", "name": "Username", "autoWidth": true },
+                    {
+                        "data": "dob",
+                        "name": "Date of Birth",
+                        "autoWidth": true,
+                        "render": function (data, type, row) {
+                            // Convert the date string to a Date object
+                            console.log(data)
+                            var date = new Date(data);
+                            console.log(date)
+                            var formattedDate = date.toLocaleDateString();
+                            return formattedDate;
+                        }
+                    },
+                    { "data": "email", "name": "Email", "autoWidth": true },
+                    { "data": "mobile", "name": "Contact No.", "autoWidth": true },
+                    { "data": "address", "name": "Address", "autoWidth": true },
+                    {
+                        "render": function (data, type, row) {
+                            var editButton = "<a href='AddEdit?id=" + row.id + "' class='btn btn-primary'>Edit</a>";
+                            var deleteButton = "<button class='btn btn-danger delete-btn' onclick=DeleteCustomer('" + row.id + "'); >Delete</button>";
+                            return editButton + " | " + deleteButton;
+                        }
+                    },
+                ],
+            });
+        }
+
+        function DeleteCustomer(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: '/Hospital/Delete?id=' + id,
+                        success: function (response) {
+                            // Handle success response
+                            // For example, reload the data table after deletion
+                            $('#dataTable').DataTable().ajax.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error response
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+}
+

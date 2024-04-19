@@ -23,6 +23,7 @@ namespace DocSpot.Models
         public Department Department { get; set; }
         public int  HospitalId { get; set ; }
         public Hospital Hospital { get; set; }
+        public List<Appointment> Appointments { get; set; }
     }
 
 }

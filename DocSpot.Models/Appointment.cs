@@ -15,7 +15,7 @@ namespace DocSpot.Models
         public Patient Patient { get; set; }
         public DateTime AppointmentDate {  get; set; }
         public string AppointmentTime { get; set; }
-        public string AppointmentTitle { get; set;}
+        public bool IsApproved { get; set;}
 
     }
 

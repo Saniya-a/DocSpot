@@ -1,0 +1,132 @@
+﻿@model DocSpot.ViewModels.AppointmentVM
+
+@{
+    if (Model.Id == 0)
+    {
+        ViewData["Title"] = "Add Appintment";
+    }
+    else
+    {
+        ViewData["Title"] = "Edit Appintment";
+    }
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddEditAppointment">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(x => x.Id)
+            <div class="form-group">
+                <label asp-for="HospitalId" class="control-label"></label>
+                <select asp-for="HospitalId" class="form-control" id="hospitalDropdown">
+                    <option value="">Select Hospital</option>
+                    @foreach (var hospital in ViewBag.HospitalList)
+                    {
+                        <option value="@hospital.Id">@hospital.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="HospitalId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartmentId" class="control-label"></label>
+                <select asp-for="DepartmentId" class="form-control" id="departmentDropdown">
+                    <option value="">Select Department</option>
+                    @foreach (var item in ViewBag.DepartmentList)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="HospitalId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoctorId" class="control-label"></label>
+                <select asp-for="DoctorId" class="form-control" id="doctorDropdown">
+                    <option value="">Select Doctor</option>
+                    
+                </select>
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentDate" class="control-label">Date of Appointment</label>
+                <input asp-for="AppointmentDate" type="text" id="AppointmentDate" class="form-control" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentTime" class="control-label"></label>
+                <select asp-for="AppointmentTime" class="form-control">
+                    <option value="">Select Appointment Time</option>
+                    @foreach (var item in ViewBag.AppointmentTimeList)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+                <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            $('#AppointmentDate').datepicker({
+                format: 'yyyy-mm-dd', // Date format
+                autoclose: true, // Close the datepicker when a date is selected
+            });
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#hospitalDropdown, #departmentDropdown').change(function () {
+                var hospitalId = $('#hospitalDropdown').val();
+                var departmentId = $('#departmentDropdown').val();
+
+                // Make sure both hospital and department are selected
+                if (hospitalId && departmentId) {
+                    $.ajax({
+                        url: '/Patient/GetDoctorList',
+                        type: 'GET',
+                        data: { hospitalId: hospitalId, departmentId: departmentId },
+                        success: function (data) {
+                            // Clear existing options
+                            console.log(data);
+                            $('#doctorDropdown').empty();
+                            // Add new options
+                            $.each(data, function (key, value) {
+                                $('#doctorDropdown').append($('<option>', {
+                                    value: 0,
+                                    text: "Select Doctor"
+                                }));
+                                $('#doctorDropdown').append($('<option>', {
+                                    value: value.id,
+                                    text: value.firstName + " " + value.lastName
+                                }));
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+}

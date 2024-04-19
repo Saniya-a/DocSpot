@@ -16,6 +16,7 @@ namespace DocSpot.Repository.DAL.Interfaces
                                 Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
                                 string includeProperties = "");
         Task<T> GetById(int id);
+        Task<List<T>> Read();
         Task<T> Add(T item);
         Task<T> Update(T item);
         Task<T> Delete(T item);

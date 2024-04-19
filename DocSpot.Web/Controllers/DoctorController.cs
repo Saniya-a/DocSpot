@@ -10,9 +10,14 @@ namespace DocSpot.Web.Controllers
     public class DoctorController : Controller
     {
         private readonly IGenericRepository<Doctor> _repository;
-        public DoctorController(IGenericRepository<Doctor> repository)
+        private readonly IGenericRepository<Hospital> _hospitalRepo;
+        private readonly IGenericRepository<Department> _departmentRepo;
+
+        public DoctorController(IGenericRepository<Doctor> repository, IGenericRepository<Hospital> hospitalRepo, IGenericRepository<Department> departmentRepo)
         {
             _repository = repository;
+            _hospitalRepo = hospitalRepo;
+            _departmentRepo = departmentRepo;
         }
 
         public IActionResult Index()
@@ -20,8 +25,16 @@ namespace DocSpot.Web.Controllers
             return View();
         }
 
+        public IActionResult GetAll()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> AddEdit(int id)
         {
+            ViewBag.HospitalList = await _hospitalRepo.Read();
+            ViewBag.DepartmentList = await _departmentRepo.Read();
+
             if (id == 0)
             {
                 return View(new DoctorVM());
@@ -90,10 +103,14 @@ namespace DocSpot.Web.Controllers
                 {
                     return query.OrderBy(item => item.FirstName);
                 };
-
-                var data = _repository.GetAll(Convert.ToInt32(start), Convert.ToInt32(length), filter, orderBy);
-
-                return Json(new { draw = draw, recordsTotal = data.total, recordsFiltered = data.items.Count(), data = data.items });
+                var includeProperties = "Department,Hospital";
+                var data = _repository.GetAll(Convert.ToInt32(start), Convert.ToInt32(length), filter, orderBy, includeProperties);
+                var list = new List<DoctorVM>();
+                foreach (var item in data.items)
+                {
+                    list.Add(new DoctorVM(item));
+                }
+                return Json(new { draw = draw, recordsTotal = data.total, recordsFiltered = data.items.Count(), data = list });
             }
             catch (Exception ex)
             {

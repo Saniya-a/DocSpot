@@ -1,4 +1,5 @@
-﻿using DocSpot.Repository.DAL.Interfaces;
+﻿using DocSpot.Models;
+using DocSpot.Repository.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace DocSpot.Repository.DAL.Repositories
         public GenericRepository(DocSpotDBContext dBContext)
         {
             _dbContext = dBContext;
-            dbSet = _dbContext.Set<T>();    
+            dbSet = _dbContext.Set<T>();
         }
         public async Task<T> Add(T item)
         {
@@ -54,7 +55,7 @@ namespace DocSpot.Repository.DAL.Repositories
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
         {
             IQueryable<T> query = dbSet;
-            if(filter != null)
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
@@ -62,14 +63,17 @@ namespace DocSpot.Repository.DAL.Repositories
             {
                 query.Include(property);
             }
-            if(orderBy != null)
+            if (orderBy != null)
             {
                 return orderBy(query).ToList();
             }
             return query.ToList();
         }
 
-        public (IEnumerable<T> items, int total) GetAll(int pageNo, int perPage, Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
+        public (IEnumerable<T> items, int total) GetAll(int pageNo, int perPage,
+                    Expression<Func<T, bool>> filter = null,
+                    Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                    string includeProperties = "")
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
@@ -79,7 +83,7 @@ namespace DocSpot.Repository.DAL.Repositories
             var total = query.Count();
             foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                query.Include(property);
+                query = query.Include(property);
             }
             query = query.Skip((pageNo) * perPage).Take(perPage);
             if (orderBy != null)
@@ -89,9 +93,15 @@ namespace DocSpot.Repository.DAL.Repositories
             return (query.ToList(), total);
         }
 
+
         public async Task<T> GetById(int id)
         {
-             return await dbSet.FindAsync(id);
+            return await dbSet.FindAsync(id);
+        }
+
+        public async Task<List<T>> Read()
+        {
+            return await dbSet.ToListAsync();
         }
 
         public async Task<T> Update(T item)
