@@ -59,10 +59,7 @@
                 <label asp-for="AppointmentTime" class="control-label"></label>
                 <select asp-for="AppointmentTime" class="form-control">
                     <option value="">Select Appointment Time</option>
-                    @foreach (var item in ViewBag.AppointmentTimeList)
-                    {
-                        <option value="@item">@item</option>
-                    }
+                    <option value="1.00 PM">1.00 PM</option>
                 </select>
                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
             </div>
@@ -82,51 +79,78 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+
     <script>
         $(document).ready(function () {
             $('#AppointmentDate').datepicker({
                 format: 'yyyy-mm-dd', // Date format
                 autoclose: true, // Close the datepicker when a date is selected
             });
-        });
+           
+            // Function to populate doctor dropdown
+            // Function to populate doctor dropdown
+            function populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId) {
+                $.ajax({
+                    url: '/Doctor/GetDoctorList',
+                    type: 'GET',
+                    data: { hospitalId: hospitalId, departmentId: departmentId },
+                    success: function (data) {
+                        // Clear existing options
+                        $('#doctorDropdown').empty();
+                        if (data.length > 0) {
+                            // Add new options if doctors are available
+                            $('#doctorDropdown').append($('<option>', {
+                                value: "",
+                                text: "Select Doctor"
+                            }));
+                            $.each(data, function (key, value) {
+                                var option = $('<option>', {
+                                    value: value.id,
+                                    text: value.firstName + " " + value.lastName + " - " + value.fees
+                                });
+                                // Set selected attribute for the selected doctor
+                                if (value.id == selectedDoctorId) { // Use == instead of === to compare values
+                                    option.prop('selected', true);
+                                }
+                                $('#doctorDropdown').append(option);
+                            });
+                        } else {
+                            // Show "No Doctors available" if no doctors are returned
+                            $('#doctorDropdown').append($('<option>', {
+                                value: "",
+                                text: "No Doctors available"
+                            }));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
 
-    </script>
+            debugger;
+            // Populate doctor dropdown on page load if hospital and department are selected
+            var hospitalId = $('#hospitalDropdown').val();
+            var departmentId = $('#departmentDropdown').val();
+            var selectedDoctorId = '@Model.DoctorId'; // Get the selected doctor ID from the model
+            if (hospitalId && departmentId) {
+                populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
+            }
 
-    <script>
-        $(document).ready(function () {
+            // Event listener for hospital and department dropdown change
             $('#hospitalDropdown, #departmentDropdown').change(function () {
+                debugger
                 var hospitalId = $('#hospitalDropdown').val();
                 var departmentId = $('#departmentDropdown').val();
 
                 // Make sure both hospital and department are selected
                 if (hospitalId && departmentId) {
-                    $.ajax({
-                        url: '/Patient/GetDoctorList',
-                        type: 'GET',
-                        data: { hospitalId: hospitalId, departmentId: departmentId },
-                        success: function (data) {
-                            // Clear existing options
-                            console.log(data);
-                            $('#doctorDropdown').empty();
-                            // Add new options
-                            $.each(data, function (key, value) {
-                                $('#doctorDropdown').append($('<option>', {
-                                    value: 0,
-                                    text: "Select Doctor"
-                                }));
-                                $('#doctorDropdown').append($('<option>', {
-                                    value: value.id,
-                                    text: value.firstName + " " + value.lastName
-                                }));
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(xhr.responseText);
-                        }
-                    });
+                    populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
                 }
             });
         });
+
+
     </script>
 
 }

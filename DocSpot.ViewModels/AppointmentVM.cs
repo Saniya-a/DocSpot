@@ -20,7 +20,7 @@ namespace DocSpot.ViewModels
         public string? PatientName { get; set; }
         public string? HospitalName { get; set;}
         public int? HospitalId { get; set; }
-        public string? DepartmentName { get;}
+        public string? DepartmentName { get; set; }
         public int? DepartmentId { get; set; }
 
 

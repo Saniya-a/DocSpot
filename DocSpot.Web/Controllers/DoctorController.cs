@@ -12,21 +12,34 @@ namespace DocSpot.Web.Controllers
         private readonly IGenericRepository<Doctor> _repository;
         private readonly IGenericRepository<Hospital> _hospitalRepo;
         private readonly IGenericRepository<Department> _departmentRepo;
+        private readonly IAppointmentRepository _appointmentRepo;
 
-        public DoctorController(IGenericRepository<Doctor> repository, IGenericRepository<Hospital> hospitalRepo, IGenericRepository<Department> departmentRepo)
+        public DoctorController(IGenericRepository<Doctor> repository, IGenericRepository<Hospital> hospitalRepo, 
+            IGenericRepository<Department> departmentRepo, IAppointmentRepository appointmentRepo)
         {
             _repository = repository;
             _hospitalRepo = hospitalRepo;
             _departmentRepo = departmentRepo;
+            _appointmentRepo = appointmentRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var doctorId = 4;
+            var list = await _appointmentRepo.GetAppointmentsByDoctorId(doctorId);
+            return View(list);
+        }
+
+        public async Task<IActionResult> ApproveAppointment(int id)
+        {
+            
+            await _appointmentRepo.ApproveAppointment(id);
+            return RedirectToAction("Index");
         }
 
         public IActionResult GetAll()
         {
+
             return View();
         }
 
@@ -117,5 +130,20 @@ namespace DocSpot.Web.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        public async Task<IActionResult> GetDoctorList(int hospitalId, int departmentId)
+        {
+            //var doctorList = _repository.Read().Where(x => x.HospitalId == hospitalId && x.DepartmentId == departmentId).ToList();
+            Expression<Func<Doctor, bool>> filter = x => x.HospitalId == hospitalId && x.DepartmentId == departmentId;
+            Func<IQueryable<Doctor>, IOrderedQueryable<Doctor>> orderBy = query =>
+            {
+                return query.OrderBy(item => item.LastName).ThenBy(itm => itm.FirstName);
+            };
+            var doctors = _repository.GetAll(filter, orderBy);
+            return Json(doctors);
+        }
+
+
     }
 }

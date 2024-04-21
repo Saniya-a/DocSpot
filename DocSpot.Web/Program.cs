@@ -8,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(600000);
+});
+
+
 builder.Services.AddDbContext<DocSpotDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IGenericRepository<Hospital>, GenericRepository<Hospital>>();
 builder.Services.AddScoped<IGenericRepository<Department>, GenericRepository<Department>>();
@@ -15,6 +22,7 @@ builder.Services.AddScoped<IGenericRepository<Doctor>, GenericRepository<Doctor>
 builder.Services.AddScoped<IGenericRepository<Patient>, GenericRepository<Patient>>();
 builder.Services.AddScoped<IGenericRepository<Admin>, GenericRepository<Admin>>();
 builder.Services.AddScoped<IGenericRepository<Appointment>, GenericRepository<Appointment>>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 
 
@@ -33,10 +41,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Admin}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

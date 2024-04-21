@@ -15,18 +15,22 @@ namespace DocSpot.Web.Controllers
         private readonly IGenericRepository<Appointment> _appointment;
         private readonly IGenericRepository<Hospital> _hospitalRepo;
         private readonly IGenericRepository<Department> _departmentRepo;
-
+        private readonly IAppointmentRepository _appointmentRepo;
         public PatientController(IGenericRepository<Patient> repository, IGenericRepository<Appointment> appointment, 
-                                    IGenericRepository<Hospital> hospitalRepo, IGenericRepository<Department> departmentRepo)
+                                    IGenericRepository<Hospital> hospitalRepo, IGenericRepository<Department> departmentRepo, 
+                                    IAppointmentRepository appointmentRepo)
         {
             _repository = repository;
             _appointment = appointment;
             _hospitalRepo = hospitalRepo;
             _departmentRepo = departmentRepo;
+            _appointmentRepo = appointmentRepo;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var patientId = 1;
+            var list = await _appointmentRepo.GetAppointmentsByPatientId(patientId);
+            return View(list);
         }
 
         public IActionResult GetAll()
@@ -118,9 +122,9 @@ namespace DocSpot.Web.Controllers
                 }
                 else
                 {
-                    var editObj = await _repository.GetById(id);
-                    var model = new PatientVM(editObj);
-                    return View(model);
+                    var editObj = await _appointmentRepo.GetById(id);
+                    
+                    return View(editObj);
                 }
             }
             catch (Exception ex)
@@ -130,11 +134,36 @@ namespace DocSpot.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> GetDoctorList(int hospitalId, int departmentId)
+        [HttpPost]
+        public async Task<IActionResult> AddEditAppointment(AppointmentVM model)
         {
-            var doctors = await _repository.Read();
-            return Json(doctors);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (model.Id == 0)
+                    {
+                        model.PatientId = 1;
+                        await _appointmentRepo.Add(model);
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        
+                        await _appointmentRepo.Update(model);
+                        return RedirectToAction("Index");
+                    }
+
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> LoadData()
