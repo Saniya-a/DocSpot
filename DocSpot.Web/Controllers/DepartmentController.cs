@@ -4,9 +4,11 @@ using DocSpot.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 using System.Linq.Expressions;
+using static DocSpot.Web.Filters.AutherizationFilter;
 
 namespace DocSpot.Web.Controllers
 {
+    [AdminAuthFilter]
     public class DepartmentController : Controller
     {
         private readonly IGenericRepository<Department> _repository;

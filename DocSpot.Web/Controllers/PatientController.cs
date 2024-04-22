@@ -5,6 +5,7 @@ using DocSpot.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Linq.Expressions;
+using static DocSpot.Web.Filters.AutherizationFilter;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DocSpot.Web.Controllers
@@ -26,13 +27,41 @@ namespace DocSpot.Web.Controllers
             _departmentRepo = departmentRepo;
             _appointmentRepo = appointmentRepo;
         }
+
+        [PatientAuthFilter]
         public async Task<IActionResult> Index()
         {
-            var patientId = 1;
+            var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
             var list = await _appointmentRepo.GetAppointmentsByPatientId(patientId);
             return View(list);
         }
+        [PatientAuthFilter]
+        public async Task<IActionResult> ViewProfile()
+        {
+            var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
+            var details = await _repository.GetById(patientId);
+            var model = new PatientVM(details);
+            return View(model);
+        }
+        [PatientAuthFilter]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
+            var details = await _repository.GetById(patientId);
+            var model = new PatientVM(details);
+            return View(model);
+        }
 
+        [PatientAuthFilter]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(PatientVM model)
+        {
+            var add = model.ConvertToModel(model);
+            await _repository.Update(add);
+            return RedirectToAction("Index", "Patient");
+        }
+
+        [AdminAuthFilter]
         public IActionResult GetAll()
         {
             try
@@ -57,7 +86,7 @@ namespace DocSpot.Web.Controllers
             }
         }
 
-
+        [AdminAuthFilter]
         public async Task<IActionResult> AddEdit(int id)
         {
             try
@@ -79,6 +108,8 @@ namespace DocSpot.Web.Controllers
                 return View();
             }
         }
+
+        [AdminAuthFilter]
         [HttpPost]
         public async Task<IActionResult> AddEdit(PatientVM model)
         {
@@ -109,6 +140,7 @@ namespace DocSpot.Web.Controllers
             }
         }
 
+        [PatientAuthFilter]
         public async Task<IActionResult> AddEditAppointment(int id)
         {
             ViewBag.HospitalList = await _hospitalRepo.Read();
@@ -134,6 +166,7 @@ namespace DocSpot.Web.Controllers
             }
         }
 
+        [PatientAuthFilter]
         [HttpPost]
         public async Task<IActionResult> AddEditAppointment(AppointmentVM model)
         {
@@ -143,7 +176,7 @@ namespace DocSpot.Web.Controllers
                 {
                     if (model.Id == 0)
                     {
-                        model.PatientId = 1;
+                        model.PatientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
                         await _appointmentRepo.Add(model);
                         return RedirectToAction("Index");
                     }

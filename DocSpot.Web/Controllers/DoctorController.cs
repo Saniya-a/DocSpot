@@ -4,6 +4,7 @@ using DocSpot.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 using System.Linq.Expressions;
+using static DocSpot.Web.Filters.AutherizationFilter;
 
 namespace DocSpot.Web.Controllers
 {
@@ -14,7 +15,7 @@ namespace DocSpot.Web.Controllers
         private readonly IGenericRepository<Department> _departmentRepo;
         private readonly IAppointmentRepository _appointmentRepo;
 
-        public DoctorController(IGenericRepository<Doctor> repository, IGenericRepository<Hospital> hospitalRepo, 
+        public DoctorController(IGenericRepository<Doctor> repository, IGenericRepository<Hospital> hospitalRepo,
             IGenericRepository<Department> departmentRepo, IAppointmentRepository appointmentRepo)
         {
             _repository = repository;
@@ -22,27 +23,57 @@ namespace DocSpot.Web.Controllers
             _departmentRepo = departmentRepo;
             _appointmentRepo = appointmentRepo;
         }
-
+        [DoctorAuthFilter]
         public async Task<IActionResult> Index()
         {
-            var doctorId = 4;
+            var doctorId = HttpContext.Session.GetInt32("DoctorId") ?? 0; ;
             var list = await _appointmentRepo.GetAppointmentsByDoctorId(doctorId);
             return View(list);
         }
 
+        [DoctorAuthFilter]
+        public async Task<IActionResult> ViewProfile()
+        {
+            var patientId = HttpContext.Session.GetInt32("DoctorId") ?? 0;
+            var includeProperties = "Department,Hospital";
+            var doctor = _repository.GetAll(null, null, includeProperties);
+            var model = new DoctorVM(new Doctor());
+            return View(model);
+        }
+        [DoctorAuthFilter]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            var patientId = HttpContext.Session.GetInt32("DoctorId") ?? 0;
+            var includeProperties = "Department,Hospital";
+            var doctor = _repository.GetAll(null, null, includeProperties).FirstOrDefault(x => x.Id == patientId);
+            var model = new DoctorVM(doctor);
+            return View(model);
+        }
+
+        [DoctorAuthFilter]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(DoctorVM model)
+        {
+            var add = model.ConvertToModel(model);
+            await _repository.Update(add);
+            return RedirectToAction("Index", "Doctor");
+        }
+        [DoctorAuthFilter]
         public async Task<IActionResult> ApproveAppointment(int id)
         {
-            
+
             await _appointmentRepo.ApproveAppointment(id);
             return RedirectToAction("Index");
         }
 
+        [AdminAuthFilter]
         public IActionResult GetAll()
         {
 
             return View();
         }
 
+        [AdminAuthFilter]
         public async Task<IActionResult> AddEdit(int id)
         {
             ViewBag.HospitalList = await _hospitalRepo.Read();
@@ -60,6 +91,8 @@ namespace DocSpot.Web.Controllers
             }
             return View();
         }
+
+        [AdminAuthFilter]
         [HttpPost]
         public async Task<IActionResult> AddEdit(DoctorVM model)
         {
@@ -90,6 +123,7 @@ namespace DocSpot.Web.Controllers
             }
         }
 
+        [AdminAuthFilter]
         public async Task<IActionResult> Delete(int id)
         {
 

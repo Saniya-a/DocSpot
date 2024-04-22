@@ -10,6 +10,7 @@ namespace DocSpot.Repository.DAL.Interfaces
 {
     public interface IAppointmentRepository
     {
+        Task<List<AppointmentVM>> GetAll();
         Task<List<AppointmentVM>> GetAppointmentsByPatientId(int patientId);
         Task<List<AppointmentVM>> GetAppointmentsByDoctorId(int doctorId);
         Task Add(AppointmentVM appointment);

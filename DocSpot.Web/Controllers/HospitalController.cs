@@ -3,9 +3,11 @@ using DocSpot.Repository.DAL.Interfaces;
 using DocSpot.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using static DocSpot.Web.Filters.AutherizationFilter;
 
 namespace DocSpot.Web.Controllers
 {
+    [AdminAuthFilter]
     public class HospitalController : Controller
     {
         private readonly IGenericRepository<Hospital> _repository;

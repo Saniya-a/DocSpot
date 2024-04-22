@@ -59,7 +59,10 @@
                 <label asp-for="AppointmentTime" class="control-label"></label>
                 <select asp-for="AppointmentTime" class="form-control">
                     <option value="">Select Appointment Time</option>
-                    <option value="1.00 PM">1.00 PM</option>
+                    @foreach (var item in ViewBag.AppointmentTimeList)
+                    {
+                        <option value="@item">@item</option>
+                    }
                 </select>
                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
             </div>

@@ -98,9 +98,34 @@ namespace DocSpot.Web.Controllers
                     Mobile = model.Mobile,
                 };
                 _repositoryPatient.Add(add);
-                return RedirectToAction("Login", "Login");
+                return RedirectToAction("Login", "Account");
             }
            
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        public IActionResult Profile()
+        {
+            var patId = HttpContext.Session.GetInt32("PatientId");
+            var docId = HttpContext.Session.GetInt32("DoctorId");
+            if (docId != 0 && docId != null)
+            {
+                return RedirectToAction("ViewProfile", "Doctor");
+            }
+            else if (patId != 0 && patId != null)
+            {
+                return RedirectToAction("ViewProfile", "Patient");
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
     }
 }

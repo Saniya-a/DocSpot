@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DocSpot.ViewModels.AppointmentVM>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_AdminLayout";
+}
+
+<h1>Appointments</h1>
+
+<table class="table" id="appointmentTable">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Patient</th>
+            <th scope="col">Appointment Date</th>
+            <th scope="col">Appointment Time</th>
+            <th scope="col">Doctor</th>
+            <th scope="col">Hospital</th>
+            <th scope="col">Department</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appointment in Model)
+        {
+            <tr>
+                <td>@appointment.Id</td>
+                <td>@appointment.PatientName</td>
+                <td>@appointment.AppointmentDate</td>
+                <td>@appointment.AppointmentTime</td>
+                <td>@appointment.DoctorName</td>
+                <td>@appointment.HospitalName</td>
+                <td>@appointment.DepartmentName</td>
+                <td>@((bool)appointment.IsApproved ? "Approved" : "Not Approved")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#appointmentTable').DataTable();
+        });
+    </script>
+}

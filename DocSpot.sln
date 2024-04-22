@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocSpot.Models", "DocSpot.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocSpot.Repository", "DocSpot.Repository\DocSpot.Repository.csproj", "{6D7FADA2-E216-478A-A302-540DFCDB1E15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocSpot.ViewModels", "DocSpot.ViewModels\DocSpot.ViewModels.csproj", "{841FC38C-1951-4AD0-A155-8AB5A9F7453A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocSpot.ViewModels", "DocSpot.ViewModels\DocSpot.ViewModels.csproj", "{841FC38C-1951-4AD0-A155-8AB5A9F7453A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocSpot.WebAPI", "DocSpot.WebAPI\DocSpot.WebAPI.csproj", "{59AB16D9-853F-4B5D-8DE0-11F7B4D6BEF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{841FC38C-1951-4AD0-A155-8AB5A9F7453A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{841FC38C-1951-4AD0-A155-8AB5A9F7453A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{841FC38C-1951-4AD0-A155-8AB5A9F7453A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59AB16D9-853F-4B5D-8DE0-11F7B4D6BEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59AB16D9-853F-4B5D-8DE0-11F7B4D6BEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59AB16D9-853F-4B5D-8DE0-11F7B4D6BEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59AB16D9-853F-4B5D-8DE0-11F7B4D6BEF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

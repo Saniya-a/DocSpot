@@ -99,6 +99,7 @@ namespace DocSpot.Repository.DAL.Repositories
             return await dbSet.FindAsync(id);
         }
 
+
         public async Task<List<T>> Read()
         {
             return await dbSet.ToListAsync();

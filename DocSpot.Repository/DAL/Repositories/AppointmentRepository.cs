@@ -44,6 +44,36 @@ namespace DocSpot.Repository.DAL.Repositories
             }
         }
 
+        public async Task<List<AppointmentVM>> GetAll()
+        {
+            try
+            {
+                 
+                return await _dbContext.Appointments.Select(x => new AppointmentVM
+                {
+                    Id = x.Id,
+                    DoctorId = x.DoctorId,
+                    PatientId = x.PatientId,
+                    PatientName = x.Patient.FirstName + " " + x.Patient.LastName,
+                    DoctorName = x.Doctor.FirstName + " " + x.Doctor.LastName,
+                    DepartmentName = x.Doctor.Department.Name ?? "General Practicial",
+                    HospitalName = x.Doctor.Hospital.Name,
+                    DepartmentId = x.Doctor.DepartmentId,
+                    HospitalId = x.Doctor.HospitalId,
+                    AppointmentDate = x.AppointmentDate,
+                    AppointmentTime = x.AppointmentTime,
+                    IsApproved = x.IsApproved,
+
+                }).ToListAsync();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<List<AppointmentVM>> GetAppointmentsByDoctorId(int doctorId)
         {
             try

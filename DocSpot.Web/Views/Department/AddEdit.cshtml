@@ -1,6 +1,8 @@
 ﻿@model DocSpot.ViewModels.DepartmentVM
 
 @{
+    Layout = "_AdminLayout";
+
     if(Model.Id == 0)
     {
         ViewData["Title"] = "Add Department";
