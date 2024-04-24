@@ -61,7 +61,7 @@ namespace DocSpot.Repository.DAL.Repositories
             }
             foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                query.Include(property);
+                query = query.Include(property); 
             }
             if (orderBy != null)
             {
@@ -69,6 +69,7 @@ namespace DocSpot.Repository.DAL.Repositories
             }
             return query.ToList();
         }
+
 
         public (IEnumerable<T> items, int total) GetAll(int pageNo, int perPage,
                     Expression<Func<T, bool>> filter = null,
@@ -85,7 +86,7 @@ namespace DocSpot.Repository.DAL.Repositories
             {
                 query = query.Include(property);
             }
-            query = query.Skip((pageNo) * perPage).Take(perPage);
+            query = query.Skip(pageNo).Take(perPage);
             if (orderBy != null)
             {
                 return (orderBy(query).ToList(), total);

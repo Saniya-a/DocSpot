@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.AppointmentTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsApproved)
+                Actions
             </th>
             <th></th>
         </tr>
@@ -46,12 +46,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.AppointmentTime)
                 </td>
-                <td>@((bool)item.IsApproved ? "Approved" : "Not Approved")</td>
 
                 <td>
                     @if (item.IsApproved ?? false)
                     {
-                        <span>Approve</span>
+                        <span>Approved</span>
                     }
                     else
                     {

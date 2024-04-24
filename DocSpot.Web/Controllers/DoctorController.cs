@@ -36,8 +36,8 @@ namespace DocSpot.Web.Controllers
         {
             var patientId = HttpContext.Session.GetInt32("DoctorId") ?? 0;
             var includeProperties = "Department,Hospital";
-            var doctor = _repository.GetAll(null, null, includeProperties);
-            var model = new DoctorVM(new Doctor());
+            var doctor = _repository.GetAll(null, null, includeProperties).FirstOrDefault(x => x.Id == patientId);
+            var model = new DoctorVM(doctor);
             return View(model);
         }
         [DoctorAuthFilter]
@@ -89,7 +89,6 @@ namespace DocSpot.Web.Controllers
                 var model = new DoctorVM(editObj);
                 return View(model);
             }
-            return View();
         }
 
         [AdminAuthFilter]
@@ -122,17 +121,15 @@ namespace DocSpot.Web.Controllers
                 return View(model);
             }
         }
-
         [AdminAuthFilter]
         public async Task<IActionResult> Delete(int id)
         {
 
             var deleteObj = await _repository.GetById(id);
-            var model = new DoctorVM(deleteObj);
             await _repository.Delete(deleteObj);
             return Ok("Item deleted successfully");
         }
-
+        [AdminAuthFilter]
         [HttpPost]
         public async Task<IActionResult> LoadData()
         {

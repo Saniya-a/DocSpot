@@ -12,9 +12,12 @@ namespace DocSpot.WebAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IGenericRepository<Patient> _genericPatient;
-        public AdminController(IGenericRepository<Patient> genericPatient)
+        private readonly IGenericRepository<Department> _genericDept;
+
+        public AdminController(IGenericRepository<Patient> genericPatient, IGenericRepository<Department> genericDept)
         {
             _genericPatient = genericPatient;
+            _genericDept = genericDept;
         }
 
         [HttpPost]
@@ -41,20 +44,44 @@ namespace DocSpot.WebAPI.Controllers
             }
 
         }
-
+        [HttpGet]
+        [Route("Get")]
         public async Task<PatientVM> Get(int id)
         {
             try
             {
                 var patient = await _genericPatient.GetById(id);
-                if(patient == null)
+                if (patient == null)
                 {
-                    throw new KeyNotFoundException("Couldn't find the id";
+                    throw new KeyNotFoundException("Couldn't find the id");
                 }
                 else
                 {
                     var patientVM = new PatientVM(patient);
                     return patientVM;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAll")]
+        public async Task<List<Department>> GetAll()
+        {
+            try
+            {
+                var patient = await _genericDept.Read();
+                if (patient == null)
+                {
+                    throw new KeyNotFoundException("Couldn't find the id");
+                }
+                else
+                {
+                    
+                    return patient;
                 }
             }
             catch (Exception ex)

@@ -75,7 +75,15 @@ namespace DocSpot.Web.Controllers
                 return View(model);
             }
         }
+        [AdminAuthFilter]
+        public async Task<IActionResult> Delete(int id)
+        {
 
+            var deleteObj = await _repository.GetById(id);
+            await _repository.Delete(deleteObj);
+            return Ok("Item deleted successfully");
+        }
+        [AdminAuthFilter]
         [HttpPost]
         public async Task<IActionResult> LoadData()
         {
@@ -96,7 +104,7 @@ namespace DocSpot.Web.Controllers
 
                 var data = _repository.GetAll(Convert.ToInt32(start), Convert.ToInt32(length), filter, orderBy);
 
-                return Json(new { draw = draw, recordsTotal = data.total, recordsFiltered = data.items.Count(), data = data.items });
+                return Json(new { draw = draw, recordsTotal = data.total, recordsFiltered = data.total, data = data.items });
             }
             catch (Exception ex)
             {

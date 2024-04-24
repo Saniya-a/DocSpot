@@ -15,6 +15,8 @@ namespace DocSpot.Web.Filters
                     context.Result = new RedirectToActionResult("Login", "Account", new { });
                 }
             }
+            
+
         }
 
         public class DoctorAuthFilter : Attribute, IAuthorizationFilter

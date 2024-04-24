@@ -68,16 +68,16 @@ namespace DocSpot.Web.Controllers
                 return View(model);
             }
         }
-
+        [AdminAuthFilter]
         public async Task<IActionResult> Delete(int id)
         {
 
             var deleteObj = await _repository.GetById(id);
             var model = new HospitalVM(deleteObj);
-            //await _repository.Delete(deleteObj);
+            await _repository.Delete(deleteObj);
             return Ok("Item deleted successfully");
         }
-
+        [AdminAuthFilter]
         [HttpPost]
         public async Task<IActionResult> LoadData()
         {

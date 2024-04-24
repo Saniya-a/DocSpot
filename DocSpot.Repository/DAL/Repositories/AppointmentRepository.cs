@@ -106,7 +106,7 @@ namespace DocSpot.Repository.DAL.Repositories
             try
             {
                 var doctor = await _dbContext.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentId);
-                doctor.IsApproved = !doctor.IsApproved;
+                doctor.IsApproved = true;
                 await _dbContext.SaveChangesAsync();    
             }
             catch (Exception)
