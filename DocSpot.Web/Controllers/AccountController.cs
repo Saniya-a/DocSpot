@@ -1,8 +1,11 @@
-﻿using DocSpot.Models;
+﻿using Azure;
+using DocSpot.Models;
 using DocSpot.Repository.DAL.Interfaces;
 using DocSpot.ViewModels;
 using DocSpot.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using NuGet.Protocol;
 using System.Linq.Expressions;
 
 namespace DocSpot.Web.Controllers
@@ -33,7 +36,7 @@ namespace DocSpot.Web.Controllers
         {
             switch (model.AccountType)
             {
-                case "1":
+                case 1:
                     Expression<Func<Admin, bool>> filter = x => x.Username == model.UserName && x.Password == model.Password;
                     var login = _repositoryAdmin.GetAll(filter).FirstOrDefault();
                     if (login != null)
@@ -43,7 +46,7 @@ namespace DocSpot.Web.Controllers
                     }
                     ModelState.AddModelError(String.Empty, "Invalid Credentials");
                     return View(model);
-                case "2":
+                case 2:
                     Expression<Func<Doctor, bool>> docFilter = x => x.Username == model.UserName && x.Password == model.Password;
                     var doc = _repositoryDoctor.GetAll(docFilter).FirstOrDefault();
                     if (doc != null)
@@ -53,7 +56,7 @@ namespace DocSpot.Web.Controllers
                     }
                     ModelState.AddModelError(String.Empty, "Invalid Credentials");
                     return View(model);
-                case "3":
+                case 3:
                     Expression<Func<Patient, bool>> patFilter = x => x.Username == model.UserName && x.Password == model.Password;
                     var pat = _repositoryPatient.GetAll(patFilter).FirstOrDefault();
                     if (pat != null)
@@ -106,7 +109,8 @@ namespace DocSpot.Web.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+
+            return RedirectToAction("Index", "Admin");
         }
 
 
@@ -130,3 +134,4 @@ namespace DocSpot.Web.Controllers
     }
 }
 
+ 

@@ -38,27 +38,52 @@ namespace DocSpot.Web.Controllers
         [PatientAuthFilter]
         public async Task<IActionResult> ViewProfile()
         {
-            var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
-            var details = await _repository.GetById(patientId);
-            var model = new PatientVM(details);
-            return View(model);
+            try
+            {
+                var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
+                var details = await _repository.GetById(patientId);
+                var model = new PatientVM(details);
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Some error occured");
+                return View("Index");
+            }
         }
         [PatientAuthFilter]
         public async Task<IActionResult> UpdateProfile()
         {
-            var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
-            var details = await _repository.GetById(patientId);
-            var model = new PatientVM(details);
-            return View(model);
+            try
+            {
+                var patientId = HttpContext.Session.GetInt32("PatientId") ?? 0;
+                var details = await _repository.GetById(patientId);
+                var model = new PatientVM(details);
+                return View(model);
+            }
+            catch (Exception)
+            {
+
+                ModelState.AddModelError(string.Empty, "Some error occured");
+                return RedirectToAction("ViewProfile");
+            }
         }
 
         [PatientAuthFilter]
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(PatientVM model)
         {
-            var add = model.ConvertToModel(model);
-            await _repository.Update(add);
-            return RedirectToAction("Index", "Patient");
+            try
+            {
+                var add = model.ConvertToModel(model);
+                await _repository.Update(add);
+                return RedirectToAction("Index", "Patient");
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Some error occured");
+                return View(model);
+            }
         }
 
         [AdminAuthFilter]

@@ -55,7 +55,6 @@
                         "name": "Date of Birth",
                         "autoWidth": true,
                         "render": function (data, type, row) {
-                            // Convert the date string to a Date object
                             console.log(data)
                             var date = new Date(data);
                             console.log(date)
@@ -95,12 +94,10 @@
                     $.ajax({
                         url: '/Doctor/Delete?id=' + id,
                         success: function (response) {
-                            // Handle success response
-                            // For example, reload the data table after deletion
+                            
                             $('#dataTable').DataTable().ajax.reload();
                         },
                         error: function (xhr, status, error) {
-                            // Handle error response
                             console.error(xhr.responseText);
                         }
                     });

@@ -71,12 +71,10 @@
                     $.ajax({
                         url: '/Hospital/Delete?id=' + id,
                         success: function (response) {
-                            // Handle success response
-                            // For example, reload the data table after deletion
+                            
                             $('#dataTable').DataTable().ajax.reload();
                         },
                         error: function (xhr, status, error) {
-                            // Handle error response
                             console.error(xhr.responseText);
                         }
                     });

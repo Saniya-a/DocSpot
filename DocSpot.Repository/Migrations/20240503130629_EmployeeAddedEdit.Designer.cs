@@ -4,6 +4,7 @@ using DocSpot.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocSpot.Repository.Migrations
 {
     [DbContext(typeof(DocSpotDBContext))]
-    partial class DocSpotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240503130629_EmployeeAddedEdit")]
+    partial class EmployeeAddedEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,35 +171,6 @@ namespace DocSpot.Repository.Migrations
                     b.HasIndex("HospitalId");
 
                     b.ToTable("Doctors");
-                });
-
-            modelBuilder.Entity("DocSpot.Models.Employee", b =>
-                {
-                    b.Property<int>("EmployeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
-
-                    b.Property<string>("DateOfJoining")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhotoFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EmployeeId");
-
-                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("DocSpot.Models.Hospital", b =>

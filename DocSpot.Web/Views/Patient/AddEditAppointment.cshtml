@@ -3,11 +3,11 @@
 @{
     if (Model.Id == 0)
     {
-        ViewData["Title"] = "Add Appintment";
+        ViewData["Title"] = "Add Appointment";
     }
     else
     {
-        ViewData["Title"] = "Edit Appintment";
+        ViewData["Title"] = "Edit Appointment";
     }
 }
 
@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label asp-for="HospitalId" class="control-label"></label>
                 <select asp-for="HospitalId" class="form-control" id="hospitalDropdown">
-                    <option value="">Select Hospital</option>
+                    <option value="0">Select Hospital</option>
                     @foreach (var hospital in ViewBag.HospitalList)
                     {
                         <option value="@hospital.Id">@hospital.Name</option>
@@ -33,7 +33,7 @@
             <div class="form-group">
                 <label asp-for="DepartmentId" class="control-label"></label>
                 <select asp-for="DepartmentId" class="form-control" id="departmentDropdown">
-                    <option value="">Select Department</option>
+                    <option value="0">Select Department</option>
                     @foreach (var item in ViewBag.DepartmentList)
                     {
                         <option value="@item.Id">@item.Name</option>
@@ -44,7 +44,7 @@
             <div class="form-group">
                 <label asp-for="DoctorId" class="control-label"></label>
                 <select asp-for="DoctorId" class="form-control" id="doctorDropdown">
-                    <option value="">Select Doctor</option>
+                    <option value="">Select Hospital and Depaprtment First</option>
                     
                 </select>
                 <span asp-validation-for="DoctorId" class="text-danger"></span>
@@ -86,22 +86,34 @@
     <script>
         $(document).ready(function () {
             $('#AppointmentDate').datepicker({
-                format: 'yyyy-mm-dd', // Date format
-                autoclose: true, // Close the datepicker when a date is selected
+                format: 'yyyy-mm-dd', 
+                autoclose: true, 
             });
-           
-            // Function to populate doctor dropdown
-            // Function to populate doctor dropdown
+            var hospitalId = $('#hospitalDropdown').val();
+            var departmentId = $('#departmentDropdown').val();
+            var selectedDoctorId = '@Model.DoctorId'; 
+            if (hospitalId && departmentId) {
+                populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
+            }
+
+            $('#hospitalDropdown, #departmentDropdown').change(function () {
+                debugger
+                var hospitalId = $('#hospitalDropdown').val();
+                var departmentId = $('#departmentDropdown').val();
+
+                if (hospitalId && departmentId) {
+                    populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
+                }
+            });
+
             function populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId) {
                 $.ajax({
                     url: '/Doctor/GetDoctorList',
                     type: 'GET',
                     data: { hospitalId: hospitalId, departmentId: departmentId },
                     success: function (data) {
-                        // Clear existing options
                         $('#doctorDropdown').empty();
                         if (data.length > 0) {
-                            // Add new options if doctors are available
                             $('#doctorDropdown').append($('<option>', {
                                 value: "",
                                 text: "Select Doctor"
@@ -111,14 +123,12 @@
                                     value: value.id,
                                     text: value.firstName + " " + value.lastName + " - " + value.fees
                                 });
-                                // Set selected attribute for the selected doctor
-                                if (value.id == selectedDoctorId) { // Use == instead of === to compare values
+                                if (value.id == selectedDoctorId) {
                                     option.prop('selected', true);
                                 }
                                 $('#doctorDropdown').append(option);
                             });
                         } else {
-                            // Show "No Doctors available" if no doctors are returned
                             $('#doctorDropdown').append($('<option>', {
                                 value: "",
                                 text: "No Doctors available"
@@ -130,27 +140,6 @@
                     }
                 });
             }
-
-            debugger;
-            // Populate doctor dropdown on page load if hospital and department are selected
-            var hospitalId = $('#hospitalDropdown').val();
-            var departmentId = $('#departmentDropdown').val();
-            var selectedDoctorId = '@Model.DoctorId'; // Get the selected doctor ID from the model
-            if (hospitalId && departmentId) {
-                populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
-            }
-
-            // Event listener for hospital and department dropdown change
-            $('#hospitalDropdown, #departmentDropdown').change(function () {
-                debugger
-                var hospitalId = $('#hospitalDropdown').val();
-                var departmentId = $('#departmentDropdown').val();
-
-                // Make sure both hospital and department are selected
-                if (hospitalId && departmentId) {
-                    populateDoctorDropdown(hospitalId, departmentId, selectedDoctorId);
-                }
-            });
         });
 
 

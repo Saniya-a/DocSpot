@@ -2,18 +2,35 @@ using DocSpot.Models;
 using DocSpot.Repository;
 using DocSpot.Repository.DAL.Interfaces;
 using DocSpot.Repository.DAL.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new ResponseCacheAttribute
+    {
+        NoStore = true,
+    });
+});
+
 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromSeconds(600000);
 });
 
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(new ResponseCacheAttribute
+    {
+        NoStore = true,
+        Location = ResponseCacheLocation.None,
+        Duration = 0
+    });
+});
 
 builder.Services.AddDbContext<DocSpotDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IGenericRepository<Hospital>, GenericRepository<Hospital>>();

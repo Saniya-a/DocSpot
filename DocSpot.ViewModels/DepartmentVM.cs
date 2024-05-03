@@ -1,6 +1,7 @@
 ﻿using DocSpot.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -11,6 +12,7 @@ namespace DocSpot.ViewModels
     public class DepartmentVM
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Department Name is required")]
         public string Name { get; set; }
 
         public DepartmentVM()

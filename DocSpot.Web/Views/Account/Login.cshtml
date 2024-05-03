@@ -1,4 +1,4 @@
-﻿@model DocSpot.Web.Models.LoginVM
+﻿@model DocSpot.ViewModels.LoginVM
 
 @{
     Layout = "_LayoutLogin";
@@ -23,14 +23,19 @@
                                 <option value="2">Doctor</option>
                                 <option value="3">Patient</option>
                             </select>
+                            <span asp-validation-for="AccountType" class="text-danger"></span>
+
                         </div>
                         <div class="form-group">
                             <label asp-for="UserName">Username:</label>
-                            <input type="text" id="Username" name="Username" class="form-control" required />
+                            <input type="text" id="Username" name="Username" class="form-control"  />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Password">Password:</label>
-                            <input type="password" id="Password" name="Password" class="form-control" required />
+                            <input type="password" id="Password" name="Password" class="form-control"  />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Login</button>
                         <a asp-action="Register" asp-controller="Account" class="pl-2 mt-2">Don't have a account yet?</a>
@@ -42,3 +47,8 @@
     </div>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

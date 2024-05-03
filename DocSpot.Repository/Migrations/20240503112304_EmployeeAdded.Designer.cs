@@ -4,6 +4,7 @@ using DocSpot.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocSpot.Repository.Migrations
 {
     [DbContext(typeof(DocSpotDBContext))]
-    partial class DocSpotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240503112304_EmployeeAdded")]
+    partial class EmployeeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,29 +175,29 @@ namespace DocSpot.Repository.Migrations
 
             modelBuilder.Entity("DocSpot.Models.Employee", b =>
                 {
-                    b.Property<int>("EmployeeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DateOfJoining")
+                    b.Property<DateTime>("DateOfJoining")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Department")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.Property<string>("PhotoFileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("EmployeeId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Employees");
                 });
@@ -304,6 +307,17 @@ namespace DocSpot.Repository.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Hospital");
+                });
+
+            modelBuilder.Entity("DocSpot.Models.Employee", b =>
+                {
+                    b.HasOne("DocSpot.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("DocSpot.Models.Doctor", b =>
